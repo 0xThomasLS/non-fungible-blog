@@ -1,0 +1,9 @@
+{
+  "name": "non-fungible-article",
+  "version": "1.0.0",
+  "description": "My first implementation of NFT usage for my own blog",
+  "main": "index.js",
+  "repository": "git@github.com:thomasLS64/non-fungible-article.git",
+  "author": "ThomasLS",
+  "license": "GPL-3.0+"
+}
