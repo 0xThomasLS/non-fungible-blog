@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router'
 import { useBlogStore } from '@/stores/blog'
 
 async function main() {
+  await window.ethereum.enable()
   const blog = useBlogStore()
   await blog.load()
 }

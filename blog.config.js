@@ -2,7 +2,7 @@ require('dotenv').config()
 
 module.exports = {
   Blog: {
-    Name: process.env.BLOG_NAME || "NFB",
+    Name: process.env.VITE_APP_TITLE || "NFB",
     Description: process.env.BLOG_DESCRIPTION || "Non Fungible Blog example"
   },
 
