@@ -1,27 +1,44 @@
-(async () => {
-  try {
-      console.log('Running deployment script...')
-      
-      const contractName = 'MyArticle'
-      const constructorArgs = []
+const hre = require('hardhat')
+const Config = require('../blog.config.js')
 
-      const artifactsPath = `browser/contracts/artifacts/${contractName}.json`
+async function deployContract (contractName, ...contractParams) {
+    const Contract = await hre.ethers.getContractFactory(contractName)
+    const contract = contractParams ? await Contract.deploy(...contractParams) : await Contract.deploy()
 
-      const metadata = JSON.parse(await remix.call('fileManager', 'getFile', artifactsPath))
-      const accounts = await web3.eth.getAccounts()
-  
-      let contract = new web3.eth.Contract(metadata.abi)
-  
-      contract = contract.deploy({
-          data: metadata.data.bytecode.object,
-          arguments: constructorArgs
-      })
-  
-      const newContractInstance = await contract.send({
-          from: accounts[0]
-      })
-      console.log('Contract deployed at address: ', newContractInstance.options.address)
-  } catch (e) {
-      console.log(e.message)
-  }
-})()
+    await contract.deployed()
+
+    return contract
+}
+
+async function main() {
+    console.log('Running deployment script...')
+
+    if (!Config.ContractAddr.Blog) {
+        const blogContract = await deployContract('Blog', Config.Blog.Name, Config.Blog.Description)
+    
+        if (blogContract) {
+            console.log('Blog deployed to:', blogContract.address)
+        }
+    } else {
+        console.log('Blog contract already deployed at:', Config.ContractAddr.Blog)
+    }
+
+    if (!Config.ContractAddr.Article) {
+        const articleContract = await deployContract('MyArticle')
+
+        if (articleContract) {
+            console.log('Article deployed to:', articleContract.address)
+        }
+    } else {
+        console.log('Article contract already deployed at:', Config.ContractAddr.Article)
+    }
+
+    console.log('Deployment script finished!')
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error)
+    process.exit(1)
+  })
